@@ -79,18 +79,17 @@ class URL
 
 		$url = $this->FetchUrl($this->GetUrl());
 
-		preg_match_all("/<title>(.+)<\/title>/i", $url, $title);
+		
 
-		if(isset($titles[1][0])){
+		if(preg_match_all("/<title>(.+)<\/title>/i", $url, $title)){
 
-			return $titles[1][0];
+			return $title;
 
 		}else{
 
 			return "Sorry! No title found";
 
 		}
-
 	}	
 	/**
 	 * Fetch keywords
@@ -118,12 +117,10 @@ class URL
 	public function FetchDescription(){
 
 		$url = $this->FetchUrl($this->GetUrl());
+		
+		if(preg_match_all("/<p>(.+)<\/p>/i", $url, $paragraphs)){
 
-		preg_match_all("/<h1>(.+)<\/h1>/i", $url, $paragraphs);
-
-		if(isset($paragraphs[0][0]) and isset($paragraphs[0][1])){
-
-			return $paragraphs[0][0] . ' ' . $paragraphs[0][1] . ' ' .$paragraphs[0][2];
+			return $paragraphs;
 
 		}else{
 
