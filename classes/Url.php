@@ -1,4 +1,5 @@
 <?php
+
 	/**
 	 * This package can extract url and grap screenshort form url.
 	 *
@@ -6,32 +7,23 @@
 	 * @author-profile https://www.facebook.com/malikumerfarooq01/
 	 * @license MIT 
 	 * @link     https://github.com/Lablnet/PHP-URL
+	 *
+	 * **NOTE**
+	 * -This Class requires that ini file setting for fopen be set to true
 	 */
-class URL
-{
-	//set the url
-	private $url;
+class URL {
+	
+	private $url; // Set the url
+	private $tags; // For Meta Tags
 
-	/**
-	 * Set the url
-	 * @param  $url valid url of web
-	 * @return void
-	 */	 
-	public function SetUrl( $url ){
-
+	
+	public function __construct($url){
+		
 		$this->url = $url;
-
+		
+		$this->tags = get_meta_tags( $this->url ); 
+		
 	}
-
-	/**
-	 * Get the url
-	 * @return url
-	 */		
-	public function GetUrl(){
-
-		return $this->url;
-
-	}	
 
 	/**
 	 * Clean/remove html tags
@@ -39,16 +31,21 @@ class URL
 	 * @return string
 	 */		
 	public function Clean($str){
+		
 		return strip_tags($str);
+	
 	}
+	
 	/**
 	 * Generating random slugs
 	 * @param  $length
 	 * @return string
 	 */		
 	public function Slug($length){
+		
 		$char = array_merge(range(0,9), range('a', 'z'),range('A', 'Z'));
-		$stringlength = count( $char  ); //Used Count because its array now
+		
+		$stringlength = count( $char  ); //Used Count because its an array now
 		
 		$randomString = '';
 		
@@ -66,9 +63,9 @@ class URL
 	 * @param $url valid url of web
 	 * @return raw data
 	 */			
-	public function FetchUrl( $url ){
+	public function FetchUrl(){
 
-		return file_get_contents($url);
+		return file_get_contents( $this->url );
 
 	}
 	/**
@@ -76,32 +73,64 @@ class URL
 	 * @return string
 	 */	
 	public function FetchTitle(){
-
-		$url = $this->FetchUrl($this->GetUrl());
-
 		
 
-		if(preg_match_all("/<title>(.+)<\/title>/i", $url, $title)){
+		if(preg_match( "/<title.*?>[\n\r\s]*(.*)[\n\r\s]*<\/title>/", $this->FetchUrl(), $title ) ){
 
-			return $title;
+			if (isset($title[1])){
+				
+				if ($title[1] == ''){
+                  
+				  return $this->url;
+			
+				}
+            
+				$title = $title[1];
+            
+				return trim($title);
+			
+			} else {
+
+				return "Sorry! No title found on [{$this->url}]";
+
+			} 
+			
+		} else {
+
+				return "Sorry! No title found on [{$this->url}]";
+
+		}	
+			
+		
+	}	
+	
+	/** Added
+	 * Fetch author
+	 * @return string
+	 */	
+	public function FetchMetaAuthor(){
+
+		if( isset( $this->tags['author'] ) ){
+
+			return $this->tags['authors'];
 
 		}else{
 
-			return "Sorry! No title found";
+			return "Sorry! No Author found";
 
 		}
-	}	
+
+	}
+	
 	/**
 	 * Fetch keywords
 	 * @return string
 	 */	
-	public function FetchKeywords(){
+	public function FetchMetaKeywords(){
 
-		$tags = get_meta_tags($this->GetUrl());
+		if( isset( $this->tags['keywords'] ) ){
 
-		if(isset($tags['keywords'])){
-
-			return $tags['keywords'];
+			return $this->tags['keywords'];
 
 		}else{
 
@@ -110,15 +139,53 @@ class URL
 		}
 
 	}	
+	
+	/** Added
+	 * Fetch description
+	 * @return string
+	 */	
+	public function FetchMetaDescription(){
+
+		if( isset( $this->tags['description'] ) ){
+
+			return $this->tags['description'];
+
+		}else{
+
+			return "Sorry! No Description found";
+
+		}
+
+	}
+	
+	/** Added
+	 * Fetch geo positioning
+	 * @return string
+	 */	
+	public function FetchMetaGeoPos(){
+
+		if( isset( $this->tags['geo_position'] ) ){
+
+			return $this->tags['geo_position'];
+
+		}else{
+
+			return "Sorry! No Geo Position found";
+
+		}
+
+	}
+	
+	
+	/**WHAT PARAGRAPHS ARE YOU LOOKING**/
 	/**
 	 * Fetch Description
 	 * @return string
 	 */	
+	 /*
 	public function FetchDescription(){
 
-		$url = $this->FetchUrl($this->GetUrl());
-		
-		if(preg_match_all("/<p>(.+)<\/p>/i", $url, $paragraphs)){
+		if(preg_match_all("/<p>(.+)<\/p>/i", $this->FetchUrl(), $paragraphs)){
 
 			return $paragraphs;
 
@@ -129,17 +196,17 @@ class URL
 		}
 
 	}	
+	
+	*/
 	/**
 	 * Fetch images form url
 	 * @return string
 	 */	
 	public function FetchImages(){
 
-		$url = $this->FetchUrl($this->GetUrl());
+		preg_match_all( '/<img[^>]*'.'src=[\"|\'](.*)[\"|\']/Ui', $this->FetchUrl(), $images );
 
-		preg_match_all('/<img[^>]*'.'src=[\"|\'](.*)[\"|\']/Ui', $url, $images);
-
-		if(isset($images)){
+		if( isset( $images ) ){
 
 			return $images;
 
@@ -151,64 +218,51 @@ class URL
 
 	}
 	/**
-	 * Capture web screenshort using google api
+	 * Capture web screenshot using google api
 	 * @return blob
 	 */	
 	public function CaptureUrl(){
-		//getting url
-		$siteURL = $this->GetUrl();
+		
 		//call Google PageSpeed Insights API
-		$googlepsdata = file_get_contents("https://www.googleapis.com/pagespeedonline/v2/runPagespeed?url={$siteURL}&screenshot=true");
-			//decode json data
-		$googlepsdata = json_decode($googlepsdata,true);
+		$googlepsdata = file_get_contents( "https://www.googleapis.com/pagespeedonline/v2/runPagespeed?url={$this->url}&screenshot=true" );
+			
+		//decode json data
+		$googlepsdata = json_decode( $googlepsdata,true );
+		
 		//screenshot data
 		$snap = $googlepsdata['screenshot']['data'];
-		$snap = str_replace(array('_','-'),array('/','+'),$snap); 	
+		
+		$snap = str_replace(array( '_','-' ),array( '/','+' ),$snap ); 	
+		
 		return $snap;
+		
 	}
-	/**
-	 * Filters all url from string
-	 * @param $url valid url of web
-	 * @return array
-	 */				
-	public function FilterUrl($url){
 
-		if(preg_match_all('#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $url, $match)){
-
-			return $match;
-
-		}else{
-
-			return false;
-
-		}
-
-	}
 	/**
 	 * get back all data
 	 * @return array
 	 */	
 	public function GetData(){
-		$array = 
-		[
-
-			'url' => $this->GetUrl(),
+		$arr = [
+		
+			'url' => $this->url,
 
 			'slug' => $this->Slug(6),
 
 			'title' => $this->FetchTitle(),
 
-			'keywords' => $this->FetchKeywords(),
+			'keywords' => $this->FetchMetaKeywords(),
 
-			'description' => $this->Clean($this->FetchDescription()),
+			'description' => $this->Clean( $this->FetchMetaDescription() ),
 
-			'screenshort' => $this->CaptureUrl(),
+			'screenshot' => $this->CaptureUrl(),
 
-			'images' => $this->FetchImages(),
+			'images' => $this->FetchImages()
 			
 		];
 
-		return $array;
+		return $arr;
 
-	}	
-}
+	} // end method
+	
+} // end class
