@@ -6,7 +6,13 @@ if( ini_get( 'allow_url_fopen' ) ) {
 	//call the class using require_once //better for error checking
 	require_once( 'classes/Url.php' );
 
-	$getSite = new URL( 'https://github.com/' );
+	$test = "how are you friends https://github.com/";
+
+	$getSite = new URL;
+
+	$filter_url = $getSite->FilterUrl($test);
+
+	$getSite->SetUrl( $filter_url[0][0] );
 
 	$data = $getSite->GetData();
 
@@ -14,11 +20,10 @@ if( ini_get( 'allow_url_fopen' ) ) {
 
 	//print_r($data);
 
-	foreach ( $data['title'] as $key => $value) {
+	
 
-		echo $value[0];
+		echo $data['title'];
 
-	}
 
 	echo "<br>";
 
