@@ -13,16 +13,20 @@
 	 */
 class URL {
 	
-	private $url; // Set the url
+	public $url; // Set the url
+
 	private $tags; // For Meta Tags
 
 	
-	public function __construct($url){
-		
+	/**
+	 * Set the url
+	 * @param  $url valid url of web
+	 * @return void
+	 */	 
+	public function SetUrl( $url ){
+
 		$this->url = $url;
-		
-		$this->tags = get_meta_tags( $this->url ); 
-		
+
 	}
 
 	/**
@@ -176,28 +180,6 @@ class URL {
 
 	}
 	
-	
-	/**WHAT PARAGRAPHS ARE YOU LOOKING**/
-	/**
-	 * Fetch Description
-	 * @return string
-	 */	
-	 /*
-	public function FetchDescription(){
-
-		if(preg_match_all("/<p>(.+)<\/p>/i", $this->FetchUrl(), $paragraphs)){
-
-			return $paragraphs;
-
-		}else{
-
-			return "Sorry! No description found";
-
-		}
-
-	}	
-	
-	*/
 	/**
 	 * Fetch images form url
 	 * @return string
@@ -236,6 +218,25 @@ class URL {
 		
 		return $snap;
 		
+	}
+
+	/**
+	 * Filters all url from string
+	 * @param $url valid url of web
+	 * @return array
+	 */				
+	public function FilterUrl($url){
+
+		if(preg_match_all('#\bhttps?://[^,\s()<>]+(?:\([\w\d]+\)|([^,[:punct:]\s]|/))#', $url, $match)){
+
+			return $match;
+
+		}else{
+
+			return false;
+
+		}
+
 	}
 
 	/**
