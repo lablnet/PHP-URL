@@ -25,7 +25,15 @@ class URL {
 	 */	 
 	public function SetUrl( $url ){
 
-		$this->url = $url;
+		if(self::IsUrl($url)){
+
+			$this->url = $url;
+
+		}else{
+
+			return false;
+
+		}
 
 	}
 
@@ -68,8 +76,14 @@ class URL {
 	 * @return raw data
 	 */			
 	public function FetchUrl(){
+		if(self::IsUrl($this->url)){
 
-		return file_get_contents( $this->url );
+			return file_get_contents( $this->url );
+		}else{
+
+			return false;
+
+		}	
 
 	}
 	/**
@@ -238,7 +252,44 @@ class URL {
 		}
 
 	}
+	/**
+	 * Check url is avilable or not
+	 * @param $url url of web to be checked
+	 * @return boolean
+	 */		
+	public function IsUrl($url)
+       {
+               
+               if(!filter_var($url, FILTER_VALIDATE_URL)){
+                       return false;
+               }
 
+               $curl_init = curl_init($url);
+
+               curl_setopt($curl_init, CURLOPT_CONNECTTIMEOUT, 10);
+
+               curl_setopt($curl_init, CURLOPT_HEADER, true);
+
+              curl_setopt($curl_init, CURLOPT_NOBODY, true);
+
+              curl_setopt($curl_init, CURLOPT_RETURNTRANSFER, true);
+
+               $response = curl_exec($curl_init);
+
+               curl_close($curl_init);
+
+               if ($response){
+
+               		return true;
+
+               }else{
+
+               		return false;
+
+               }
+
+               
+       }
 	/**
 	 * get back all data
 	 * @return array

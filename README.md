@@ -7,3 +7,4 @@ It can perform several operations with URLs like:
 - Retrieve the contents of the respective page
 - Extract the page title, meta description, keywords, images
 - Capture a screenshot using the Google Page Speed API
+- Check url is exists or not
