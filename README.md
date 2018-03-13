@@ -1,5 +1,6 @@
 # PHP-URL
-## This package can manipulate URLs and capture a screenshot of a page.
+## A PHP Class to parse and manipulate URLs
+### This package can manipulate URLs and capture a screenshot of a page.
 
 It can perform several operations with URLs like:
 
@@ -8,4 +9,4 @@ It can perform several operations with URLs like:
 - Extract the page title, meta description, keywords, images
 - Capture a screenshot using the Google Page Speed API
 - Check url is exists or not
-- Use CURL so `allow_url_fopen = off ` is best for security `on` is not required
+- This class use CURL so `allow_url_fopen = off ` is best for security `on` is not required
