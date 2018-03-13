@@ -8,17 +8,29 @@
 	 * @license MIT 
 	 * @link     https://github.com/Lablnet/PHP-URL
 	 *
-	 * **NOTE**
-	 * -This Class requires that ini file setting for fopen be set to true
 	 */
 class URL {
 	
 	protected $url; // Set the url
 
-	private $tags; // For Meta Tags
+	private $tags = []; // For Meta Tags
 
 	private $connTime; // For Connection time
 
+	 /**
+	 * Unset these when object died
+	 *	
+	 * @return void
+	 */	 
+	public function __destruct(){
+
+		unset($this->url);
+
+		unset($this->tags);
+
+		unset($this->connTime);
+
+	}
 	/**
 	 * Set Connection time for feching
 	 * @param  $time ex 10
@@ -36,7 +48,7 @@ class URL {
 
 		}
 
-	}	
+	}
 	/**
 	 * Set the url
 	 * @param  $url valid url of web
@@ -48,6 +60,8 @@ class URL {
 
 			$this->url = $url;
 
+			self::MetaTags();
+
 		}else{
 
 			return false;
@@ -55,7 +69,83 @@ class URL {
 		}
 
 	}
+	 /**
+	 * Get meta tags form url
+	 *
+	 * @return mix-data
+	 */	 		
+	public function MetaTags(){
 
+		$doc = new DOMDocument();
+
+		@$doc->loadHTML(self::FetchUrl());
+
+		 $metas = $doc->getElementsByTagName('meta');
+
+		$title = $doc->getElementsByTagName('title');
+
+		if(isset($title->item(0)->nodeValue)){
+
+        	$this->tags['title'] = $title->item(0)->nodeValue;
+
+   		}
+
+   		for ($i = 0; $i < $metas->length; $i++){
+
+    		$meta = $metas->item($i);
+
+	    		if($meta->getAttribute('name') == 'description'){
+
+	       			$description = $meta->getAttribute('content');
+
+	       		}
+
+	    		if($meta->getAttribute('name') == 'keywords'){
+
+	       		$keywords = $meta->getAttribute('content');
+
+	       		}
+
+
+	    		if($meta->getAttribute('name') == 'author'){
+
+	       		$author = $meta->getAttribute('content');
+
+	       		}	       		
+
+	    		if($meta->getAttribute('name') == 'geo_position'){
+
+	       		$geo_position = $meta->getAttribute('content');
+
+	       		}	 
+
+       		}
+
+       		if(isset($description)){
+
+       			$this->tags['description'] = $description;
+
+       		}
+
+       		if(isset($keywords)){
+
+       			$this->tags['keywords'] = $keywords;
+
+       		}
+
+       		if(isset($author)){
+
+       			$this->tags['author'] = $author;
+
+       		}
+
+       		if(isset($geo_position)){
+
+       			$this->tags['geo_position'] = $geo_position;
+
+       		}
+
+	}	
 	/**
 	 * Clean/remove html tags
 	 * @param  $string
@@ -96,7 +186,7 @@ class URL {
 	 */			
 	public function FetchUrl(){
 
-		if(!empty($this->url)){
+		if(isset($this->url) && !empty($this->url)){
 
 			$curl_init = curl_init($this->url);
 
@@ -129,7 +219,15 @@ class URL {
 				
 				if ($title[1] == ''){
                   
-				  return $this->url;
+					 if(isset($this->tags['title'])) {
+
+						return $this->tags['title'];
+
+					}else{
+
+						return "Sorry! No title found on [{$this->url}]";
+
+					}
 			
 				}
             
@@ -137,13 +235,21 @@ class URL {
             
 				return trim($title);
 			
-			} else {
+			}elseif(isset($this->tags['title'])) {
+
+				return $this->tags['title'];
+
+		}else{
 
 				return "Sorry! No title found on [{$this->url}]";
 
-			} 
+		}
 			
-		} else {
+		}elseif(isset($this->tags['title'])) {
+
+				return $this->tags['title'];
+
+		}else{
 
 				return "Sorry! No title found on [{$this->url}]";
 
