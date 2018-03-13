@@ -13,11 +13,30 @@
 	 */
 class URL {
 	
-	public $url; // Set the url
+	protected $url; // Set the url
 
 	private $tags; // For Meta Tags
 
-	
+	private $connTime; // For Connection time
+
+	/**
+	 * Set Connection time for feching
+	 * @param  $time ex 10
+	 * @return void
+	 */	 	
+	public function SetConnTime($time){
+
+		if(is_numeric($time) && is_int($time)){
+
+			$this->connTime = $time;
+
+		}else{
+
+			$this->connTime = 10;
+
+		}
+
+	}	
 	/**
 	 * Set the url
 	 * @param  $url valid url of web
@@ -76,9 +95,21 @@ class URL {
 	 * @return raw data
 	 */			
 	public function FetchUrl(){
-		if(self::IsUrl($this->url)){
 
-			return file_get_contents( $this->url );
+		if(!empty($this->url)){
+
+			    $curl_init = curl_init($this->url);
+
+               curl_setopt($curl_init, CURLOPT_CONNECTTIMEOUT, $this->connTime);
+
+              curl_setopt($curl_init, CURLOPT_RETURNTRANSFER, true);
+
+               $response = curl_exec($curl_init);
+
+               curl_close($curl_init);
+
+               return $response;
+
 		}else{
 
 			return false;
@@ -219,18 +250,36 @@ class URL {
 	 */	
 	public function CaptureUrl(){
 		
+		if(!empty( $this->url )){
+
+
+               $curl_init = curl_init("https://www.googleapis.com/pagespeedonline/v2/runPagespeed?url={$this->url}&screenshot=true");
+
+               curl_setopt($curl_init, CURLOPT_CONNECTTIMEOUT, $this->connTime);
+
+              curl_setopt($curl_init, CURLOPT_RETURNTRANSFER, true);
+
+               $response = curl_exec($curl_init);
+
+               curl_close($curl_init);
+
 		//call Google PageSpeed Insights API
-		$googlepsdata = file_get_contents( "https://www.googleapis.com/pagespeedonline/v2/runPagespeed?url={$this->url}&screenshot=true" );
 			
 		//decode json data
-		$googlepsdata = json_decode( $googlepsdata,true );
+		$googlepsdata = json_decode( $response,true );
 		
 		//screenshot data
 		$snap = $googlepsdata['screenshot']['data'];
 		
 		$snap = str_replace(array( '_','-' ),array( '/','+' ),$snap ); 	
-		
+	
 		return $snap;
+
+	 }else{
+
+	 	return false;
+
+	 }
 		
 	}
 
@@ -266,7 +315,7 @@ class URL {
 
                $curl_init = curl_init($url);
 
-               curl_setopt($curl_init, CURLOPT_CONNECTTIMEOUT, 10);
+               curl_setopt($curl_init, CURLOPT_CONNECTTIMEOUT, $this->connTime);
 
                curl_setopt($curl_init, CURLOPT_HEADER, true);
 

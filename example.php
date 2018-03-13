@@ -1,14 +1,15 @@
 <?php
 
-//Check if the environment has access to outside urls
-if( ini_get( 'allow_url_fopen' ) ) {
-	
 	//call the class using require_once //better for error checking
 	require_once( 'classes/Url.php' );
 
 	$test = "how are you friends https://github.com/";
 
 	$getSite = new URL;
+
+
+	//for performance improvement
+	$getSite->SetConnTime(3);
 
 	$filter_url = $getSite->FilterUrl($test);
 
@@ -22,7 +23,7 @@ if( ini_get( 'allow_url_fopen' ) ) {
 
 	
 
-		echo $data['title'];
+	echo $data['title'];
 
 
 	echo "<br>";
@@ -47,12 +48,15 @@ if( ini_get( 'allow_url_fopen' ) ) {
 
 	echo "<br>";
 
+	echo $data['screenshot'];
+
+	echo "<br>";
+
 	//image if you want print all images using foreach loop
 
-	echo $data['images'][0][1].'/>';
+	if(isset($data['images'][0][1])){
+
+		echo $data['images'][0][1].'/>';
+
+	}
 	
-} else {
-	
-	die( "Check Your Ini File Settings &amp; Set allow_url_fopen to true|1 " );
-	
-}

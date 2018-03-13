@@ -8,3 +8,4 @@ It can perform several operations with URLs like:
 - Extract the page title, meta description, keywords, images
 - Capture a screenshot using the Google Page Speed API
 - Check url is exists or not
+- Use CURL so `allow_url_fopen = off ` is best for security `on` is not required
