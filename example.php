@@ -9,7 +9,7 @@
 
 
 	//for performance improvement
-	$getSite->SetConnTime(3);
+	$getSite->SetConnTime(8);
 
 	$filter_url = $getSite->FilterUrl($test);
 
@@ -48,7 +48,7 @@
 
 	echo "<br>";
 
-	echo $data['screenshot'];
+	//echo $data['screenshot'];
 
 	echo "<br>";
 

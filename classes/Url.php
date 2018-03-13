@@ -98,17 +98,17 @@ class URL {
 
 		if(!empty($this->url)){
 
-			    $curl_init = curl_init($this->url);
+			$curl_init = curl_init($this->url);
 
-               curl_setopt($curl_init, CURLOPT_CONNECTTIMEOUT, $this->connTime);
+			curl_setopt($curl_init, CURLOPT_CONNECTTIMEOUT, $this->connTime);
 
-              curl_setopt($curl_init, CURLOPT_RETURNTRANSFER, true);
+			curl_setopt($curl_init, CURLOPT_RETURNTRANSFER, true);
 
-               $response = curl_exec($curl_init);
+			$response = curl_exec($curl_init);
 
-               curl_close($curl_init);
+			curl_close($curl_init);
 
-               return $response;
+            return $response;
 
 		}else{
 
@@ -123,7 +123,6 @@ class URL {
 	 */	
 	public function FetchTitle(){
 		
-
 		if(preg_match( "/<title.*?>[\n\r\s]*(.*)[\n\r\s]*<\/title>/", $this->FetchUrl(), $title ) ){
 
 			if (isset($title[1])){
@@ -251,7 +250,6 @@ class URL {
 	public function CaptureUrl(){
 		
 		if(!empty( $this->url )){
-
 
                $curl_init = curl_init("https://www.googleapis.com/pagespeedonline/v2/runPagespeed?url={$this->url}&screenshot=true");
 
