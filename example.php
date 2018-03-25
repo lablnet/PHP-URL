@@ -4,7 +4,7 @@
 	
 	require_once( 'classes/Url.php' );
 
-	$test = "how are you friends https://www.google.com/";
+	$test = "how are you friends https://github.com/";
 
 	$getSite = new URL;
 
@@ -45,8 +45,8 @@
 
 	//description
 
-	echo $data['description'];
-
+	//echo $data['description'];
+	print_r($data['description']);
 	echo "<br>";
 
 	//echo $data['screenshot'];

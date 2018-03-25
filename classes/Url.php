@@ -27,6 +27,9 @@ class URL {
 		//avoid error 'maximun execution time 30 seconds etc....'
 		set_time_limit(0);
 
+		//if you dont want use this comment or delete this line its only for if you want store data in database untill user close browser
+		self::UserAbord();
+
 	}
 	 /**
 	 * Unset these when object died
@@ -42,6 +45,18 @@ class URL {
 		unset($this->connTime);
 
 	}
+	/**
+	 *  Set whether a client disconnect should allow script execution
+	 *
+	 * @return void
+	 */	 		
+	public function UserAbord(){
+
+		ignore_user_abort(true);
+
+		return($this);
+
+	}	
 	/**
 	 * Set Connection time for feching
 	 * @param  $time ex 10
@@ -237,7 +252,6 @@ class URL {
 					}else{
 
 						return false;
-						//return "Sorry! No title found on [{$this->url}]";
 
 					}
 			
@@ -254,7 +268,7 @@ class URL {
 
 		}else{
 
-				return "Sorry! No title found on [{$this->url}]";
+				return false;
 
 		}
 			
@@ -265,7 +279,6 @@ class URL {
 		}else{
 
 				return false;
-				//return "Sorry! No title found on [{$this->url}]";
 
 		}	
 			
@@ -285,7 +298,6 @@ class URL {
 		}else{
 
 			return false;
-			//return "Sorry! No Author found";
 
 		}
 
@@ -304,7 +316,6 @@ class URL {
 		}else{
 
 			return false;
-			//return "Sorry! No Keywords found";
 
 		}
 
@@ -324,8 +335,8 @@ class URL {
 			return $this->tags['description'];
 
 		}else{
+
 			return false;
-			//return "Sorry! No Description found";
 
 		}
 
@@ -344,7 +355,6 @@ class URL {
 		}else{
 
 			return false;
-			//return "Sorry! No Geo Position found";
 
 		}
 
@@ -365,7 +375,6 @@ class URL {
 		}else{
 
 			return false;
-			//return "Sorry! No image found";
 
 		}
 
@@ -480,6 +489,10 @@ class URL {
 			'keywords' => $this->FetchMetaKeywords(),
 
 			'description' => $this->Clean( $this->FetchMetaDescription() ),
+
+			'authors' => $this->FetchMetaAuthor(),
+
+			'geo_position' => $this->FetchMetaGeoPos(),
 
 			'screenshot' => $this->CaptureUrl(),
 
