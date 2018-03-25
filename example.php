@@ -1,9 +1,10 @@
 <?php
 
 	//call the class using require_once //better for error checking
+	
 	require_once( 'classes/Url.php' );
 
-	$test = "how are you friends https://github.com/";
+	$test = "how are you friends https://www.google.com/";
 
 	$getSite = new URL;
 

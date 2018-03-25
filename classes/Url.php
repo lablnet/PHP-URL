@@ -17,6 +17,17 @@ class URL {
 
 	private $connTime; // For Connection time
 
+	/**
+	* Construct method
+	*
+	* @return void	
+	**/
+	public function __construct(){
+
+		//avoid error 'maximun execution time 30 seconds etc....'
+		set_time_limit(0);
+
+	}
 	 /**
 	 * Unset these when object died
 	 *	
@@ -225,15 +236,17 @@ class URL {
 
 					}else{
 
-						return "Sorry! No title found on [{$this->url}]";
+						return false;
+						//return "Sorry! No title found on [{$this->url}]";
 
 					}
 			
+				}else{
+            
+					$title = $title[1];
+            
+					return trim($title);
 				}
-            
-				$title = $title[1];
-            
-				return trim($title);
 			
 			}elseif(isset($this->tags['title'])) {
 
@@ -251,7 +264,8 @@ class URL {
 
 		}else{
 
-				return "Sorry! No title found on [{$this->url}]";
+				return false;
+				//return "Sorry! No title found on [{$this->url}]";
 
 		}	
 			
@@ -270,7 +284,8 @@ class URL {
 
 		}else{
 
-			return "Sorry! No Author found";
+			return false;
+			//return "Sorry! No Author found";
 
 		}
 
@@ -288,7 +303,8 @@ class URL {
 
 		}else{
 
-			return "Sorry! No Keywords found";
+			return false;
+			//return "Sorry! No Keywords found";
 
 		}
 
@@ -300,13 +316,16 @@ class URL {
 	 */	
 	public function FetchMetaDescription(){
 
+		/*meed to fetch description using preg
+			we include in next version*/
+
 		if( isset( $this->tags['description'] ) ){
 
 			return $this->tags['description'];
 
 		}else{
-
-			return "Sorry! No Description found";
+			return false;
+			//return "Sorry! No Description found";
 
 		}
 
@@ -324,7 +343,8 @@ class URL {
 
 		}else{
 
-			return "Sorry! No Geo Position found";
+			return false;
+			//return "Sorry! No Geo Position found";
 
 		}
 
@@ -344,7 +364,8 @@ class URL {
 
 		}else{
 
-			return "Sorry! No image found";
+			return false;
+			//return "Sorry! No image found";
 
 		}
 
