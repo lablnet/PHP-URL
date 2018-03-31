@@ -19,16 +19,17 @@ class URL {
 
 	/**
 	* Construct method
+	* Init some values when object create
 	*
 	* @return void	
 	**/
 	public function __construct(){
 
 		//avoid error 'maximun execution time 30 seconds etc....'
-		set_time_limit(0);
+		self::TimeLimit(0);
 
 		//if you dont want use this comment or delete this line its only for if you want store data in database untill user close browser
-		self::UserAbord();
+		self::UserAbord(true);
 
 	}
 	 /**
@@ -37,6 +38,13 @@ class URL {
 	 * @return void
 	 */	 
 	public function __destruct(){
+
+
+		//reset time limit to default
+		self::TimeLimit(30);
+
+		//reset allow user abord to default to default
+		self::UserAbord();
 
 		unset($this->url);
 
@@ -50,13 +58,37 @@ class URL {
 	 *
 	 * @return void
 	 */	 		
-	public function UserAbord(){
+	public function UserAbord($status = null){
 
-		ignore_user_abort(true);
+		if(isset($status) && !empty($status) && $status !== null && $status === true){
+
+			ignore_user_abort(true);
+
+			return($this);
+
+		}else{
+
+			ignore_user_abort();
+
+			return($this);			
+
+		}
+
+	}	
+
+	/**
+	 *  Set execution time limit
+	 *
+	 * @return void
+	 */	 		
+	public function TimeLimit($limit){
+
+		set_time_limit($limit);
 
 		return($this);
 
 	}	
+
 	/**
 	 * Set Connection time for feching
 	 * @param  $time ex 10

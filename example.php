@@ -51,6 +51,9 @@
 
 	//echo $data['screenshot'];
 
+	//printing the screenshort
+	echo '<img src="data:image/png;base64,'. $data['screenshot'].'" alt="Red dot" />';
+
 	echo "<br>";
 
 	//image if you want print all images using foreach loop
