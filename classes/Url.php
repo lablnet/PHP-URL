@@ -28,7 +28,7 @@ class URL {
 		//avoid error 'maximun execution time 30 seconds etc....'
 		self::TimeLimit(0);
 
-		//if you dont want use this comment or delete this line its only for if you want store data in database untill user close browser
+		//if you dont want use this comment or delete this line its only for if you want store data in database even user close his browser
 		self::UserAbord(true);
 
 	}
@@ -43,7 +43,7 @@ class URL {
 		//reset time limit to default
 		self::TimeLimit(30);
 
-		//reset allow user abord to default to default
+		//reset allow user abord to default
 		self::UserAbord();
 
 		unset($this->url);
