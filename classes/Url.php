@@ -17,6 +17,8 @@ class URL {
 
 	private $connTime; // For Connection time
 
+	private $file; //storing file datta
+
 	/**
 	* Construct method
 	* Init some values when object create
@@ -51,6 +53,8 @@ class URL {
 		unset($this->tags);
 
 		unset($this->connTime);
+
+		unset($this->file);
 
 	}
 	/**
@@ -117,8 +121,11 @@ class URL {
 		if(self::IsUrl($url)){
 
 			$this->url = $url;
-
+			
+			self::FetchUrl();
+			
 			self::MetaTags();
+
 
 		}else{
 
@@ -136,7 +143,7 @@ class URL {
 
 		$doc = new DOMDocument();
 
-		@$doc->loadHTML(self::FetchUrl());
+		@$doc->loadHTML($this->file);
 
 		 $metas = $doc->getElementsByTagName('meta');
 
@@ -256,7 +263,9 @@ class URL {
 
 			curl_close($curl_init);
 
-            return $response;
+			$this->file =  $response;
+			
+			return;
 
 		}else{
 
@@ -271,7 +280,7 @@ class URL {
 	 */	
 	public function FetchTitle(){
 		
-		if(preg_match( "/<title.*?>[\n\r\s]*(.*)[\n\r\s]*<\/title>/", $this->FetchUrl(), $title ) ){
+		if(preg_match( "/<title.*?>[\n\r\s]*(.*)[\n\r\s]*<\/title>/", $this->file, $title ) ){
 
 			if (isset($title[1])){
 				
