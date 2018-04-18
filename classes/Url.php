@@ -407,7 +407,7 @@ class URL {
 	 */	
 	public function FetchImages(){
 
-		preg_match_all( '/<img[^>]*'.'src=[\"|\'](.*)[\"|\']/Ui', $this->FetchUrl(), $images );
+		preg_match_all( '/<img[^>]*'.'src=[\"|\'](.*)[\"|\']/Ui', $this->file, $images );
 
 		if( isset( $images ) ){
 
@@ -432,29 +432,29 @@ class URL {
 
                curl_setopt($curl_init, CURLOPT_CONNECTTIMEOUT, $this->connTime);
 
-              curl_setopt($curl_init, CURLOPT_RETURNTRANSFER, true);
+               curl_setopt($curl_init, CURLOPT_RETURNTRANSFER, true);
 
                $response = curl_exec($curl_init);
 
                curl_close($curl_init);
 
-		//call Google PageSpeed Insights API
+			  //call Google PageSpeed Insights API
+
+			 //decode json data
+			 $googlepsdata = json_decode( $response,true );
 			
-		//decode json data
-		$googlepsdata = json_decode( $response,true );
+			 //screenshot data
+			 $snap = $googlepsdata['screenshot']['data'];
+			
+			 $snap = str_replace(array( '_','-' ),array( '/','+' ),$snap ); 	
 		
-		//screenshot data
-		$snap = $googlepsdata['screenshot']['data'];
-		
-		$snap = str_replace(array( '_','-' ),array( '/','+' ),$snap ); 	
-	
-		return $snap;
+			 return $snap;
 
-	 }else{
+		 }else{
 
-	 	return false;
+			 return false;
 
-	 }
+		 }
 		
 	}
 
