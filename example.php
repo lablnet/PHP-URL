@@ -1,72 +1,64 @@
 <?php
 
-	//call the class using require_once //better for error checking
-	
-	require_once( 'classes/Url.php' );
+    //call the class using require_once //better for error checking
 
-	if(isset($_POST['submit'])){
+    require_once 'classes/Url.php';
 
-		$test = $_POST['url'];
+    if (isset($_POST['submit'])) {
+        $test = $_POST['url'];
 
-		$getSite = new URL;
+        $getSite = new URL();
 
+        //for performance improvement
+        $getSite->SetConnTime(8);
 
-		//for performance improvement
-		$getSite->SetConnTime(8);
+        $filter_url = $getSite->FilterUrl($test);
 
-		$filter_url = $getSite->FilterUrl($test);
+        $getSite->SetUrl($filter_url[0][0]);
 
-		$getSite->SetUrl( $filter_url[0][0] );
+        $data = $getSite->GetData();
 
-		$data = $getSite->GetData();
+        //getting all data into array
 
-		//getting all data into array
+        //print_r($data);
 
-		//print_r($data);
+        echo $data['title'];
 
-		
+        echo '<br>';
 
-		echo $data['title'];
+        echo $data['url'];
 
+        echo '<br>';
 
-		echo "<br>";
+        echo $data['slug'];
 
-		echo $data['url'];
+        echo '<br>';
 
-		echo "<br>";
+        //keywords
 
-		echo $data['slug'];
+        echo $data['keywords'];
 
-		echo "<br>";
+        echo '<br>';
 
-		//keywords
+        //description
 
-		echo $data['keywords'];
+        //echo $data['description'];
+        print_r($data['description']);
+        echo '<br>';
 
-		echo "<br>";
+        //echo $data['screenshot'];
 
-		//description
+        //printing the screenshort
+        echo '<img src="data:image/png;base64,'.$data['screenshot'].'" alt="Red dot" />';
 
-		//echo $data['description'];
-		print_r($data['description']);
-		echo "<br>";
+        echo '<br>';
 
-		//echo $data['screenshot'];
+        //image if you want print all images using foreach loop
 
-		//printing the screenshort
-		echo '<img src="data:image/png;base64,'. $data['screenshot'].'" alt="Red dot" />';
-
-		echo "<br>";
-
-		//image if you want print all images using foreach loop
-
-		if(isset($data['images'][0][1])){
-
-			echo $data['images'][0][1].'/>';
-
-		}
-	
-	}
+        if (isset($data['images'][0][1])) {
+            echo $data['images'][0][1].'/>';
+        }
+    }
 
 ?>
 
